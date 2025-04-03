@@ -25,6 +25,7 @@ class User(db.Model):
     roles: Mapped[List["Role"]] = relationship(secondary=UserRole, back_populates="users")
     address_id: Mapped[int] = mapped_column(ForeignKey("addresses.id"))
     address : Mapped["Address"] = relationship(back_populates="user", lazy=True)
+    orders: Mapped["User"] = relationship(back_populates="user", lazy=True)
 
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!s}, email={self.email!r})"
