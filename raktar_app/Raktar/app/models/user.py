@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from app.extensions import db
 from app.extensions import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
