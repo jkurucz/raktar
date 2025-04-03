@@ -26,7 +26,7 @@ from app.models.address import Address
 
 
 #User
-from app.models.user import User, UserRestaurant, UserRole
+from app.models.user import User, UserRole
 
 # user = User(name="Test User", email="test@gmail.com", phone="+3620111111")
 # user.address = db.session.get(Address, 1)
