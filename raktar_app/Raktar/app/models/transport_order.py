@@ -10,9 +10,9 @@ class TransportOrder(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), nullable=False)
     transport_id: Mapped[int] = mapped_column(ForeignKey("transports.id"), nullable=False)
-    carrier_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)  # Fuvarozó ID
+    carrier_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)  # Fuvarozï¿½ ID
     load_date: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.utcnow)
-    direction: Mapped[str] = mapped_column(String(10), nullable=False)  # "IN" vagy "OUT"
+    #direction: Mapped[str] = mapped_column(String(10), nullable=False)  # "IN" vagy "OUT"
 
     order: Mapped["Order"] = relationship()
     transport: Mapped["Transport"] = relationship()
