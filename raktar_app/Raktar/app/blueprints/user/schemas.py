@@ -1,37 +1,40 @@
 from marshmallow import Schema, fields
-from apiflask.fields import String, Email, Nested, Integer, List
-from apiflask.validators import Length, OneOf, Email
-from app.models.user import User
+from apiflask.validators import Length, Email
 
 class RoleSchema(Schema):
-    id = fields.Integer()
-    name = fields.String()
-    
+    id = fields.Integer(dump_only=True)
+    name = fields.String(required=True)
+
 class AddressSchema(Schema):
-    city= fields.String()
-    street= fields.String()
-    postalcode = fields.Integer()
+    country = fields.String(required=True, validate=Length(min=2))
+    city = fields.String(required=True)
+    street = fields.String(required=True)
+    postalcode = fields.String(required=True, validate=Length(min=3, max=10))
 
 class UserRequestSchema(Schema):
-        
-    name = fields.String()
-    email = String(validate=Email())
-    password = fields.String()
-    phone = fields.String()
-    address = fields.Nested(AddressSchema)
+    name = fields.String(required=True)
+    email = fields.Email(required=True)
+    password = fields.String(required=True, validate=Length(min=6))
+    phone = fields.String(required=True)
+    address = fields.Nested(AddressSchema, required=True)
 
-class PayloadSchema(Schema):
-    user_id = fields.Integer()
-    roles  = fields.List(fields.Nested(RoleSchema))
-    exp = fields.Integer()
+class UserLoginSchema(Schema):
+    email = fields.Email(required=True)
+    password = fields.String(required=True)
 
 class UserResponseSchema(Schema):
     id = fields.Integer()
     name = fields.String()
     email = fields.String()
     address = fields.Nested(AddressSchema)
+    roles = fields.List(fields.Nested(RoleSchema))
     token = fields.String()
- 
-class UserLoginSchema(Schema):
-    email = String(validate=Email())
-    password = fields.String()
+
+class PayloadSchema(Schema):
+    user_id = fields.Integer()
+    roles = fields.List(fields.Nested(RoleSchema))
+    exp = fields.Integer()
+
+class ChangePasswordSchema(Schema):
+    current_password = fields.String(required=True, validate=Length(min=6))
+    new_password = fields.String(required=True, validate=Length(min=6))

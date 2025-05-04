@@ -15,20 +15,11 @@ def create_app(config_class = Config):
 
     db.init_app(app)
 
-
     from flask_migrate import Migrate
     migrate = Migrate(app, db, render_as_batch=True)
 
     #Register blueprints
     from app.blueprints import bp as bp_default
     app.register_blueprint(bp_default, url_prefix='/api')
-
-
-    @app.route("/")
-    def index():
-        return render_template("index.html")  # Rendereljük az index.html sablont
-
-    
-
 
     return app
