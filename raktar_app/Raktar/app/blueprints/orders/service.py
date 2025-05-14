@@ -94,3 +94,7 @@ class OrderService:
         db.session.add(status)
         db.session.commit()
         return True, status
+    
+    @staticmethod
+    def list_all_orders():
+        return Order.query.all()

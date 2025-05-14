@@ -129,7 +129,7 @@ class UserService:
         payload = {
             "user_id": user.id,
             "roles": RoleSchema(many=True).dump(user.roles),
-            "exp": int((datetime.now(timezone.utc) + timedelta(minutes=30)).timestamp())
+            "exp": int((datetime.now(timezone.utc) + timedelta(minutes=300)).timestamp())
         }
 
         return jwt.encode(

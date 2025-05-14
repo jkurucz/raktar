@@ -15,6 +15,7 @@ from app.blueprints.orders.service import OrderService
 # Új rendelés létrehozása – bárki bejelentkezett felhasználó
 @bp.post('/')
 @bp.auth_required(auth)
+@role_required(["Admin", "User"])
 @bp.input(OrderCreateSchema, location="json")
 @bp.output(OrderResponseSchema)
 def order_create(json_data):
@@ -28,6 +29,7 @@ def order_create(json_data):
 # Saját rendelések listázása
 @bp.get('/')
 @bp.auth_required(auth)
+@role_required(["Admin", "User"])
 @bp.output(OrderResponseSchema(many=True))
 def order_list_my():
     user_id = auth.current_user.get("user_id")
@@ -37,6 +39,7 @@ def order_list_my():
 # Egy rendelés lekérdezése (saját vagy admin)
 @bp.get('/<int:order_id>')
 @bp.auth_required(auth)
+@role_required(["Admin", "Chef"])
 @bp.output(OrderResponseSchema)
 def order_get_by_id(order_id):
     user_id = auth.current_user.get("user_id")
@@ -49,6 +52,7 @@ def order_get_by_id(order_id):
 # ✏Rendelés módosítása (saját vagy admin)
 @bp.put('/<int:order_id>')
 @bp.auth_required(auth)
+@role_required(["Admin", "Chef"])
 @bp.input(OrderUpdateSchema, location="json")
 @bp.output(OrderResponseSchema)
 def order_update(order_id, json_data):
@@ -62,6 +66,7 @@ def order_update(order_id, json_data):
 # Rendelés lezárása (saját vagy admin)
 @bp.post('/<int:order_id>/close')
 @bp.auth_required(auth)
+@role_required(["Admin", "Chef"])
 def order_close(order_id):
     user_id = auth.current_user.get("user_id")
     success, response = OrderService.close_order(order_id, user_id)
@@ -73,6 +78,7 @@ def order_close(order_id):
 # Státuszok lekérdezése – saját vagy admin
 @bp.get('/<int:order_id>/statuses')
 @bp.auth_required(auth)
+@role_required(["Admin", "Chef"])
 @bp.output(OrderStatusSchema(many=True))
 def order_list_statuses(order_id):
     user_id = auth.current_user.get("user_id")
@@ -82,7 +88,7 @@ def order_list_statuses(order_id):
 # Új státusz hozzáadása – csak Admin vagy Chef
 @bp.post('/<int:order_id>/statuses')
 @bp.auth_required(auth)
-@role_required(["Administrator", "Chef"])
+@role_required(["Admin", "Chef"])
 @bp.input(OrderStatusCreateSchema, location="json")
 @bp.output(OrderStatusSchema)
 def order_add_status(order_id, json_data):
@@ -91,3 +97,12 @@ def order_add_status(order_id, json_data):
     if success:
         return response
     raise HTTPError(message=response, status_code=400)
+
+
+# Összes megredelés
+@bp.get('/all')
+@bp.auth_required(auth)
+@role_required(["Admin", "Transport", "Warehouse"])
+@bp.output(OrderResponseSchema(many=True))
+def order_list_all():
+    return OrderService.list_all_orders()

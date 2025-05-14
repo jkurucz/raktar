@@ -14,6 +14,7 @@ from app.blueprints.products.service import ProductService
 # Termékek listázása + keresés (?search=...)
 @bp.get('/')
 @bp.auth_required(auth)
+@role_required(["Admin", "User"])
 @bp.output(ProductResponseSchema(many=True))
 def list_products():
     search_term = request.args.get("search")
@@ -22,7 +23,6 @@ def list_products():
 
 # Egy termék lekérdezése ID alapján
 @bp.get('/<int:product_id>')
-@bp.auth_required(auth)
 @bp.output(ProductResponseSchema)
 def get_product(product_id):
     product = ProductService.get_product_by_id(product_id)
@@ -34,7 +34,7 @@ def get_product(product_id):
 # ➕ Új termék létrehozása
 @bp.post('/')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin"])
 @bp.input(ProductCreateSchema, location="json")
 @bp.output(ProductResponseSchema)
 def create_product(json_data):
@@ -44,9 +44,9 @@ def create_product(json_data):
     raise HTTPError(message=result, status_code=400)
 
 # Termék módosítása
-@bp.put('/<int:product_id>')
+@bp.put('/<int:product_id>/')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin"])
 @bp.input(ProductUpdateSchema, location="json")
 @bp.output(ProductResponseSchema)
 def update_product(product_id, json_data):
@@ -59,7 +59,7 @@ def update_product(product_id, json_data):
 # Termék törlése
 @bp.delete('/<int:product_id>')
 @bp.auth_required(auth)
-@role_required(["Administrator"])
+@role_required(["Admin"])
 def delete_product(product_id):
     success = ProductService.delete_product(product_id)
     if success:
