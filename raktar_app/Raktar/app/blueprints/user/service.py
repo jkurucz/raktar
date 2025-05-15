@@ -3,7 +3,7 @@ from app.models.user import User
 from app.models.address import Address
 from app.models.role import Role
 from app.blueprints.user.schemas import UserResponseSchema, RoleSchema, PayloadSchema
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from datetime import datetime, timedelta, timezone
 from authlib.jose import jwt
 from flask import current_app
@@ -75,23 +75,6 @@ class UserService:
         return True, UserResponseSchema().dump(user)
 
     @staticmethod
-    def update_user(user_id, update_data):
-        try:
-            user = db.session.get(User, user_id)
-            if user is None:
-                return False, "User not found!"
-
-            for key, value in update_data.items():
-                if hasattr(user, key):
-                    setattr(user, key, value)
-
-            db.session.commit()
-            return True, UserResponseSchema().dump(user)
-
-        except Exception as ex:
-            return False, "Failed to update user!"
-
-    @staticmethod
     def change_user_password(user_id, data):
         try:
             user = db.session.get(User, user_id)
@@ -137,3 +120,43 @@ class UserService:
             payload,
             current_app.config["SECRET_KEY"]
         ).decode()
+    
+    @staticmethod
+    def get_all_users():
+        # itt csak visszaadod a lekerdezest, kikered a usereket
+        return db.session.scalars(select(User)).all()
+    
+    #felhasználó módosítása
+    @staticmethod
+    def safe_update_user(user_id, update_data):
+        try:
+            user = db.session.get(User, user_id)
+            if user is None:
+                return False, "User not found!"
+    
+            # Alapadatok frissítése (ha meg van adva)
+            for key in ['name', 'email', 'phone']:
+                if key in update_data and hasattr(user, key):
+                    setattr(user, key, update_data[key])
+    
+            # Cím frissítése – régiek törlése, új hozzáadása
+            if "address" in update_data:
+                user.addresses.clear()  # 🔥 régi cím(ek) törlése
+                new_addr = Address(**update_data["address"])
+                user.addresses.append(new_addr)
+    
+            # Szerepkörök teljes cseréje
+            if "roles" in update_data:
+                user.roles.clear()  # 🔥 törli az eddigieket
+                for role_name in update_data["roles"]:
+                    role_obj = db.session.execute(
+                        select(Role).filter_by(name=role_name)
+                    ).scalar_one_or_none()
+                    if role_obj:
+                        user.roles.append(role_obj)
+    
+            db.session.commit()
+            return True, UserResponseSchema().dump(user)
+    
+        except Exception as ex:
+            return False, f"Failed to safely update user: {str(ex)}"

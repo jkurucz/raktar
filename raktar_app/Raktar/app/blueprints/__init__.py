@@ -54,6 +54,9 @@ bp.register_blueprint(bp_supplyer, url_prefix='/supplier')
 from app.blueprints.transports import bp as bp_transport
 bp.register_blueprint(bp_transport, url_prefix='/transport')
 
+from app.blueprints.transcomp import bp as bp_transcomp
+bp.register_blueprint(bp_transcomp, url_prefix='/transcomp')
+
 from app.blueprints.warehouse import bp as bp_warehouse
 bp.register_blueprint(bp_warehouse, url_prefix='/warehouse')
 

@@ -5,6 +5,10 @@ import Products from "../pages/Products.tsx";
 import ProductForm from "../pages/ProductForm.tsx";
 import Registrate from "../pages/Registrate.tsx";
 import Orders from "../pages/Orders.tsx";
+import Users from "../pages/Users.tsx";
+import UserForm from "../pages/UserForm.tsx";
+import Transcomp from "../pages/Transcomp.tsx";
+import Transport from "../pages/Transport.tsx";
 
 export const routes = [
     {
@@ -38,6 +42,16 @@ export const routes = [
         isPrivate: true
     },
     {
+        path: "users",
+        component: <Users/>,
+        isPrivate: true
+    },
+      {
+        path: "users/:id",
+        component: <UserForm />,
+        isPrivate: true
+    },
+    {
         path: "product/add",
         component: <ProductForm isCreate={true}/>,
         isPrivate: true
@@ -45,6 +59,16 @@ export const routes = [
     {
         path: "product/:id",
         component: <ProductForm isCreate={false}/>,
+        isPrivate: true
+    },
+    {
+        path: "transcomp",
+        component: <Transcomp />,
+        isPrivate: true
+    },
+    {
+        path: "transport",
+        component: <Transport />,
         isPrivate: true
     },
 ]

@@ -7,6 +7,11 @@ class TransportUpdateSchema(Schema):
         required=True,
         validate=OneOf(["assigned", "in transit", "delivered", "cancelled"])
     )
+    load_date = DateTime(allow_none=True)
+
+class TransportItemSchema(Schema):
+    product_name = fields.String()
+    quantity = fields.Integer()
 
 class TransportResponseSchema(Schema):
     id = Integer()
@@ -16,3 +21,13 @@ class TransportResponseSchema(Schema):
     status = String()
     updated_at = DateTime()
     load_date = DateTime()
+    user_name = String()         # új
+    user_address = String()      # új
+    items = fields.List(fields.Nested(TransportItemSchema)) 
+    transport_company = String(allow_none=True)
+    transport_truck = String(allow_none=True)
+
+class TransportAssignSchema(Schema):
+    transport_id = Integer(required=True)
+    status = String(required=True, validate=OneOf(["in transit", "assigned"]))
+    load_date = DateTime(required=True)

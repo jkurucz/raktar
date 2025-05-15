@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from app.blueprints import role_required
 from app.blueprints.user import bp
 from app.blueprints.user.schemas import (
@@ -7,7 +7,8 @@ from app.blueprints.user.schemas import (
     UserLoginSchema,
     RoleSchema,
     AddressSchema,
-    ChangePasswordSchema
+    ChangePasswordSchema,
+    UserUpdateWithoutPasswordSchema
 )
 from app.blueprints.user.service import UserService
 from apiflask import HTTPError
@@ -37,6 +38,7 @@ def login_user(json_data):
 @bp.get('/users/me')
 @bp.output(UserResponseSchema)
 @bp.auth_required(auth)
+@role_required(["Admin"])
 def get_my_profile():
     user_id = auth.current_user.get("user_id")
     success, response = UserService.get_user_by_id(user_id)
@@ -99,3 +101,40 @@ def add_my_address(json_data):
     if success:
         return {"address_id": response}, 200
     raise HTTPError(message=response, status_code=400)
+
+# Összes felhasználó
+@bp.get('/')
+@bp.auth_required(auth)
+@role_required(["Admin"])
+@bp.output(UserResponseSchema(many=True))
+def list_users():
+    users = UserService.get_all_users()
+    
+    if users:
+        return users, 200
+    raise HTTPError(message="No users found", status_code=400)
+
+
+
+@bp.get('/users/<int:user_id>')
+@bp.auth_required(auth)
+@role_required(["Admin"])
+@bp.output(UserResponseSchema)
+def get_user_by_id(user_id):
+    success, response = UserService.get_user_by_id(user_id)
+    if success:
+        return response, 200
+    raise HTTPError(message=response, status_code=404)
+
+# Felhasználó módosítása jelszó nélkül:
+@bp.put('/users/<int:user_id>/safe-update')
+@bp.auth_required(auth)
+@role_required(["Admin"])
+@bp.input(UserUpdateWithoutPasswordSchema, location="json")
+@bp.output(UserResponseSchema)
+def safe_update_user(user_id, json_data):
+    success, response = UserService.safe_update_user(user_id, json_data)
+    if success:
+        return response, 200
+    raise HTTPError(message=response, status_code=400)
+

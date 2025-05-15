@@ -16,7 +16,7 @@ class UserRequestSchema(Schema):
     email = fields.Email(required=True)
     password = fields.String(required=True, validate=Length(min=6))
     phone = fields.String(required=True)
-    address = fields.Nested(AddressSchema, required=True)
+    address = fields.Nested(AddressSchema, allow_none=True, required=False)
 
 class UserLoginSchema(Schema):
     email = fields.Email(required=True)
@@ -26,7 +26,8 @@ class UserResponseSchema(Schema):
     id = fields.Integer()
     name = fields.String()
     email = fields.String()
-    address = fields.Nested(AddressSchema)
+    phone = fields.String()
+    addresses = fields.List(fields.Nested(AddressSchema), allow_none=True)
     roles = fields.List(fields.Nested(RoleSchema))
     token = fields.String()
 
@@ -38,3 +39,11 @@ class PayloadSchema(Schema):
 class ChangePasswordSchema(Schema):
     current_password = fields.String(required=True, validate=Length(min=6))
     new_password = fields.String(required=True, validate=Length(min=6))
+
+#jelszó nélküli userUpdate:
+class UserUpdateWithoutPasswordSchema(Schema):
+    name = fields.String(required=False)
+    email = fields.Email(required=False)
+    phone = fields.String(required=False)
+    address = fields.Nested(AddressSchema, allow_none=True, required=False)
+    roles = fields.List(fields.String(), required=False)

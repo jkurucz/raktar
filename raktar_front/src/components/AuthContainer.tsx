@@ -10,7 +10,7 @@ const AuthContainer = ({children}: AuthContainerInterface) => {
         <Center>
             <Paper radius="md" p="xl" withBorder maw={600} m={10}>
                 <Text size="lg" fw={500}>
-                    Üdvözlünk a Netpincér felületen
+                    Üdvözlünk a Raktár felületen
                 </Text>
                 <Divider my="lg"/>
                 {children}

@@ -1,9 +1,10 @@
 import axiosInstance from "./axios.config.ts";
 import { IProducts } from "../interfaces/IProducts.ts";
 import { ICreateProduct } from "../interfaces/ICreateProduct.ts";
-import { Order,  } from "../interfaces/IOrders.ts";
-
-
+import { Order } from "../interfaces/IOrders.ts";
+import { User } from "../interfaces/IUsers.ts";
+import { SafeUpdateUserRequest } from "../interfaces/IUsers.ts";
+import { ITransportOrder } from "../interfaces/ITransportOrder.ts";
 
 const Auth = {
   login: (email: string, password: string)  => axiosInstance.post<{token: string}>('/user/users/login', {email, password})
@@ -48,6 +49,30 @@ const Orders = {
     axiosInstance.post("/order/", orderData)
 };
 
+const Users = {
+  getAllUsers: () => axiosInstance.get<User[]>('/user/'),
+  getUserById: (id: string) => axiosInstance.get<User>(`/user/users/${id}`),
+  updateUser: (id: string, data: any) => axiosInstance.put(`/user/users/${id}`, data),
+  getRoles: () => axiosInstance.get<{ name: string }[]>('/user/roles'),
+  safeUpdateUser: (id: string, data: SafeUpdateUserRequest) =>
+    axiosInstance.put<User>(`/user/users/${id}/safe-update`, data)
+};
 
-const api = {Products, Auth, Registrate, Orders};
+const Transcomp = {
+  getAll: () => axiosInstance.get('/transcomp/'),
+  create: (data: { truck: string; company: string }) => axiosInstance.post('/transcomp/', data),
+  delete: (id: number) => axiosInstance.delete(`/transcomp/${id}`)
+};
+
+const TransportOrders = {
+  getAll: () => axiosInstance.get<ITransportOrder[]>('/transport/'),
+  getById: (id: number) => axiosInstance.get<ITransportOrder>(`/transport/${id}`),
+  updateStatus: (id: number, status: string) => axiosInstance.patch(`/transport/${id}`, { status }),
+  assignTransport: (id: number, data: { transport_id: number; status: string; load_date: string }) => 
+    axiosInstance.put(`/transport/${id}/assign`, data)
+};
+
+
+
+const api = {Products, Auth, Registrate, Orders, Users, Transcomp, TransportOrders};
 export default api;

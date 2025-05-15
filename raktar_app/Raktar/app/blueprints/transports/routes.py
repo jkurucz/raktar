@@ -4,25 +4,26 @@ from apiflask import HTTPError
 from app.blueprints import role_required
 from app.blueprints.transports.schemas import (
     TransportResponseSchema,
-    TransportUpdateSchema
+    TransportUpdateSchema, 
+    TransportAssignSchema
 )
 from app.blueprints.transports.service import TransportService
 
 
-# 🔎 Összes szállítás listázása – csak Admin vagy LogisticsManager
+# 🔎 Összes szállítás listázása 
 @bp.get('/')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin", "Transport"])
 @bp.output(TransportResponseSchema(many=True))
 def transport_list_all():
     return TransportService.list_transports()
 
 
 
-# 🔍 Egy konkrét szállítás lekérdezése – Admin vagy érintett Carrier
+# 🔍 Egy konkrét szállítás lekérdezése 
 @bp.get('/<int:transport_id>')
 @bp.auth_required(auth)
-@role_required(["Administrator", "Carrier"])
+@role_required(["Admin", "Transport"])
 @bp.output(TransportResponseSchema)
 def transport_get_by_id(transport_id):
     current_user_id = auth.current_user.get("user_id")
@@ -34,10 +35,10 @@ def transport_get_by_id(transport_id):
     return transport
 
 
-# ✏️ Szállítás státuszának frissítése – csak Carrier (saját fuvar) vagy Admin
+# ✏️ Szállítás státuszának frissítése 
 @bp.patch('/<int:transport_id>')
 @bp.auth_required(auth)
-@role_required(["Carrier", "Administrator"])
+@role_required(["Transport", "Admin"])
 @bp.input(TransportUpdateSchema, location="json")
 @bp.output(TransportResponseSchema)
 def transport_update_status(transport_id, json_data):
@@ -46,11 +47,24 @@ def transport_update_status(transport_id, json_data):
 
     updated = TransportService.update_transport_status(
         transport_id,
-        json_data["status"],
-        current_user_id,
-        current_roles
+        new_status=json_data["status"],
+        current_user_id=current_user_id,
+        roles=current_roles,
+        load_date=json_data.get("load_date")  # ⬅️ opcionálisan átadjuk a dátumot
     )
 
     if not updated:
         raise HTTPError(status_code=404, message="Transport not found or unauthorized")
+    return updated
+
+
+@bp.put('/<int:transport_id>/assign')
+@bp.auth_required(auth)
+@role_required(["Transport", "Admin"])
+@bp.input(TransportAssignSchema, location="json")
+@bp.output(TransportResponseSchema)
+def transport_assign_vehicle(transport_id, json_data):  # ✅ Itt a "json_data" legyen a név!
+    updated = TransportService.assign_vehicle(transport_id, json_data)
+    if not updated:
+        raise HTTPError(status_code=404, message="Hozzárendelés sikertelen vagy nem található")
     return updated

@@ -12,6 +12,7 @@ import {useMediaQuery} from "@mantine/hooks";
 import useAuth from "../../hooks/useAuth.tsx";
 import {AuthContext} from "../../context/AuthContext.tsx";
 
+
 interface NavbarLinkProps {
     icon: typeof IconHome;
     label: string;
@@ -55,6 +56,12 @@ export function NavbarMinimal({toggle}: any) {
             roles: ['Admin', 'Warehouse', 'Transport', 'User', 'Other']
         },
         {
+            icon: IconHome,
+            label: "Felhasználók",
+            url: "users",
+            roles: ['Admin']
+        },
+        {
             icon: IconBox,
             label: "Termékek",
             url: "product",
@@ -62,9 +69,21 @@ export function NavbarMinimal({toggle}: any) {
         },
         {
             icon: IconBox,
-            label: "Megrendelések",
+            label: "Rendeléseim",
             url: "orders",
             roles: ['Admin','Warehouse', 'Transport', 'User', 'Other']
+        },
+        {
+            icon: IconBox,
+            label: "Fuvarozók",
+            url: "transcomp",
+            roles: ['Admin']
+        },
+        {
+            icon: IconBox,
+            label: "Szállítások",
+            url: "transport",
+            roles: ['Admin']
         }
     ];
 

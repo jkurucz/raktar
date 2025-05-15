@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { Button, Text, Group, TextInput, Card, Textarea, NumberInput } from '@mantine/core';
 import api from '../api/api.ts';
@@ -11,6 +11,7 @@ interface IProductForm {
 
 const ProductForm = ({isCreate}: IProductForm) => {
   const {id} = useParams();
+  const navigate = useNavigate(); 
  
 
     const form = useForm({
@@ -59,12 +60,12 @@ const ProductForm = ({isCreate}: IProductForm) => {
             description: values.description,
             price: values.price,
             product_name: values.product_name
-         }).then();
+         }).then(() => navigate('/app/product'));
         } else { //módosítás
           api.Products.updateProduct(id!, {
             description: values.description,
             price: values.price,
-            product_name: values.product_name}).then()
+            product_name: values.product_name}).then(() => navigate('/app/product'));
         }
       })}>
 
