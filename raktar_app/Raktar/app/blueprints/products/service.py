@@ -1,7 +1,8 @@
 from app.extensions import db
 from app.models.product import Product
 from sqlalchemy import select, or_
-
+from app.models.warehouse import Warehouse
+from app.models.warehouse_stock import WarehouseStock
 
 class ProductService:
 
@@ -27,6 +28,16 @@ class ProductService:
         try:
             product = Product(**data)
             db.session.add(product)
+            db.session.flush()   # hogy product.id már meglegyen!
+            # Minden warehouse-hoz 0-s készlet
+            warehouses = db.session.scalars(select(Warehouse)).all()
+            for warehouse in warehouses:
+                stock = WarehouseStock(
+                    product_id=product.id,
+                    warehouse_id=warehouse.id,
+                    quantity=0
+                )
+                db.session.add(stock)
             db.session.commit()
             return True, product
         except Exception as e:

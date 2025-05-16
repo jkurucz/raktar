@@ -4,7 +4,11 @@ const ForgotPassword = () => {
     return <>
         <AuthContainer>
             <>
-                Elfelejtett jelszó oldal
+                Elfelejtett jelszó oldal...
+
+                Nos barátom így jártál!
+                
+                Regisztrálj újra másik email címmel.
             </>
         </AuthContainer>
 

@@ -5,7 +5,7 @@ from app.models.order_status import OrderStatus
 from app.models.product import Product
 from sqlalchemy import select
 from datetime import datetime
-
+from app.models.transport_order import TransportOrder
 
 class OrderService:
 
@@ -23,9 +23,34 @@ class OrderService:
 
     @staticmethod
     def list_user_orders(user_id):
-        return db.session.scalars(
+        orders = db.session.scalars(
             select(Order).where(Order.user_id == user_id)
         ).all()
+    
+        for order in orders:
+            # Ügyfél adatok
+            order.user_name = order.user.name if order.user else "-"
+            order.user_phone = order.user.phone if order.user and hasattr(order.user, "phone") else "-"
+            if order.user and order.user.addresses and len(order.user.addresses) > 0:
+                addr = order.user.addresses[0]
+                order.user_address = f"{addr.country}, {addr.postalcode} {addr.city}, {addr.street}"
+            else:
+                order.user_address = "-"
+    
+            # Fuvar adatok (legutóbbi transport order, ha van)
+            tos = order.transport_orders.order_by(TransportOrder.load_date.desc()).all()
+            transport_order = tos[0] if tos else None
+    
+            if transport_order:
+                order.transport_company = getattr(transport_order.transport, "company", None)
+                order.transport_truck = getattr(transport_order.transport, "truck", None)
+                order.load_date = transport_order.load_date
+            else:
+                order.transport_company = None
+                order.transport_truck = None
+                order.load_date = None
+    
+        return orders
 
     @staticmethod
     def get_order(order_id, user_id, roles=None):
@@ -95,6 +120,34 @@ class OrderService:
         db.session.commit()
         return True, status
     
+    # @staticmethod
+    # def list_all_orders():
+    #     return Order.query.all()
+
     @staticmethod
     def list_all_orders():
-        return Order.query.all()
+        orders = Order.query.all()
+        for order in orders:
+            # Ügyfél adatok
+            order.user_name = order.user.name if order.user else "-"
+            order.user_phone = order.user.phone if order.user and hasattr(order.user, "phone") else "-"
+            if order.user and order.user.addresses and len(order.user.addresses) > 0:
+                addr = order.user.addresses[0]
+                order.user_address = f"{addr.country}, {addr.postalcode} {addr.city}, {addr.street}"
+            else:
+                order.user_address = "-"
+
+            # Fuvar adatok (legutóbbi transport order, ha van)
+            tos = order.transport_orders.order_by(TransportOrder.load_date.desc()).all()
+            transport_order = tos[0] if tos else None
+
+            if transport_order:
+                order.transport_company = getattr(transport_order.transport, "company", None)
+                order.transport_truck = getattr(transport_order.transport, "truck", None)
+                order.load_date = transport_order.load_date
+            else:
+                order.transport_company = None
+                order.transport_truck = None
+                order.load_date = None
+
+        return orders

@@ -8,6 +8,7 @@ from app.models.order import Order
 from app.models.user import User
 from app.models.order_item import OrderItem
 from app.models.product import Product
+from app.extensions import auth
 
 class TransportService:
 
@@ -102,5 +103,18 @@ class TransportService:
         transport_order.load_date = data["load_date"]
         transport_order.updated_at = datetime.now(timezone.utc)
 
+        db.session.commit()
+        return transport_order
+    
+    @staticmethod
+    def create_new_transport_order(data):
+        transport_order = TransportOrder(
+            order_id=data["order_id"],
+            transport_id=data["transport_id"],
+            carrier_id=auth.current_user["user_id"],  # ha van auth
+            load_date=data["load_date"],
+            direction=data.get("direction", "out")
+        )
+        db.session.add(transport_order)
         db.session.commit()
         return transport_order

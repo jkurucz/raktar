@@ -48,9 +48,11 @@ def get_my_profile():
 
 
 @bp.put('/users/me')
-@bp.input(UserRequestSchema(partial=True))
+#@bp.input(UserRequestSchema(partial=True))
+@bp.input(UserUpdateWithoutPasswordSchema, location="json")
 @bp.output(UserResponseSchema)
 @bp.auth_required(auth)
+@role_required(["Admin", "User", "Warehouse", "Supplier", "Transport"])
 def update_my_profile(json_data):
     user_id = auth.current_user.get("user_id")
     success, response = UserService.update_user(user_id, json_data)

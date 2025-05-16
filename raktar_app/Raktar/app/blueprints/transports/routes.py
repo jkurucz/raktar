@@ -5,7 +5,9 @@ from app.blueprints import role_required
 from app.blueprints.transports.schemas import (
     TransportResponseSchema,
     TransportUpdateSchema, 
-    TransportAssignSchema
+    TransportAssignSchema,
+    TransportCreateSchema,
+    
 )
 from app.blueprints.transports.service import TransportService
 
@@ -68,3 +70,15 @@ def transport_assign_vehicle(transport_id, json_data):  # ✅ Itt a "json_data" 
     if not updated:
         raise HTTPError(status_code=404, message="Hozzárendelés sikertelen vagy nem található")
     return updated
+
+# új fuvar hozzáadása
+@bp.post('/')
+@bp.auth_required(auth)
+@role_required(["Transport", "Admin"])
+@bp.input(TransportCreateSchema, location="json")  # <-- ezt használd itt
+@bp.output(TransportResponseSchema, status_code=201)
+def create_transport_order(json_data):
+    created = TransportService.create_new_transport_order(json_data)
+    if not created:
+        raise HTTPError(400, message="Fuvarfeladat létrehozása sikertelen")
+    return created

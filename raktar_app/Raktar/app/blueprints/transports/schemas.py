@@ -31,3 +31,9 @@ class TransportAssignSchema(Schema):
     transport_id = Integer(required=True)
     status = String(required=True, validate=OneOf(["in transit", "assigned"]))
     load_date = DateTime(required=True)
+
+class TransportCreateSchema(Schema):
+    order_id = Integer(required=True)
+    transport_id = Integer(required=True)
+    load_date = DateTime(required=True)
+    direction = String(required=True, validate=OneOf(["outbound", "inbound"]))

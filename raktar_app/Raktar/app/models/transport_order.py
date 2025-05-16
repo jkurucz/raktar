@@ -19,7 +19,7 @@ class TransportOrder(db.Model):
     carrier_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     load_date: Mapped[datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(timezone.utc), nullable=False)
     direction: Mapped[str] = mapped_column(String(10), nullable=False)
-
-    order: Mapped["Order"] = relationship()
+    # order = relationship("Order", back_populates="transport_orders")
+    order: Mapped["Order"] = relationship(back_populates="transport_orders")
     transport: Mapped["Transport"] = relationship(back_populates="transport_orders")
     carrier: Mapped["User"] = relationship()

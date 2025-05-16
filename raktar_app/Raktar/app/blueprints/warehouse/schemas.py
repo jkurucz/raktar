@@ -16,6 +16,8 @@ class WarehouseStockSchema(Schema):
     warehouse_id = Integer()
     quantity = Integer()
     last_updated = DateTime()
+    product_name = fields.String(dump_only=True)
+    warehouse_location = fields.String(dump_only=True)
 
 
 # ✅ Fuvar hozzárendeléshez (input)
@@ -32,3 +34,7 @@ class TransportOrderSchema(Schema):
     carrier_id = Integer()
     transport_id = Integer()
     load_date = DateTime()
+
+class WarehouseSchema(Schema):
+    id = Integer()
+    storage_location = String()

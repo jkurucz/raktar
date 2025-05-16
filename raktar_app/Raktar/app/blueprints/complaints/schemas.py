@@ -12,3 +12,5 @@ class ComplaintResponseSchema(Schema):
     user_id = Integer()
     message = String()
     created_at = DateTime()
+    user_name = fields.String(dump_only=True)
+    order_items = fields.List(fields.Dict(), dump_only=True)

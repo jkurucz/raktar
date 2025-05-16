@@ -3,7 +3,14 @@ from app.models.warehouse_stock import WarehouseStock
 from app.models.transport_order import TransportOrder
 from sqlalchemy import select
 from datetime import datetime, timezone
+from app.models.product import Product
+from app.models.warehouse_stock import WarehouseStock
 
+def add_extra_fields_to_stocks(stocks):
+    for stock in stocks:
+        stock.product_name = stock.product.product_name if stock.product else f"#{stock.product_id}"
+        stock.warehouse_location = stock.warehouse.storage_location if stock.warehouse else f"#{stock.warehouse_id}"
+    return stocks
 
 class WarehouseService:
 
@@ -20,8 +27,14 @@ class WarehouseService:
             stock = db.session.execute(stmt).scalar_one_or_none()
 
             if stock:
+    # NE engedje, hogy negatívba menjen!
+                if stock.quantity + data["quantity"] < 0:
+                    return False, "A készlet nem lehet negatív!"
                 stock.quantity += data["quantity"]
             else:
+                # Ha új készletet hozol létre, minimum 0 legyen (ha valaki -1-gyel akarja felvinni, az se menjen)
+                if data["quantity"] < 0:
+                    return False, "A készlet nem lehet negatív!"
                 stock = WarehouseStock(
                     product_id=data["product_id"],
                     warehouse_id=data["warehouse_id"],
@@ -35,14 +48,18 @@ class WarehouseService:
             db.session.rollback()
             return False, "Failed to update warehouse stock"
 
+
+
+
     @staticmethod
     def get_warehouse_stock(warehouse_id):
         """
         Lekéri az adott raktárhoz tartozó készletlistát.
         """
-        return db.session.scalars(
+        stocks = db.session.scalars(
             select(WarehouseStock).where(WarehouseStock.warehouse_id == warehouse_id)
         ).all()
+        return add_extra_fields_to_stocks(stocks)
 
     @staticmethod
     def assign_transport(data):

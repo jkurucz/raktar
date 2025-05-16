@@ -1,109 +1,111 @@
 import {
-  Badge,
   Button,
   Card,
-  Select,
   Table,
   Text,
-  TextInput,
-  Stack
+  Group
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { ITransportOrder } from "../interfaces/ITransportOrder";
-import { ITranscomp } from "../interfaces/ITranscomp";
+import { useNavigate } from "react-router-dom";
 
 const TransportOrders = () => {
   const [orders, setOrders] = useState<ITransportOrder[]>([]);
-  const [transcomps, setTranscomps] = useState<ITranscomp[]>([]);
-  const [selectedTransportIds, setSelectedTransportIds] = useState<{ [key: number]: number }>({});
-  const [selectedDates, setSelectedDates] = useState<{ [key: number]: string }>({});
-
-  // useEffect(() => {
-  //   api.TransportOrders.getAll().then(res => setOrders(res.data));
-  //   api.Transcomp.getAll().then(res => setTranscomps(res.data));
-  // }, []);
+  const [statusUpdates, setStatusUpdates] = useState<{ [key: number]: string }>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
-  api.TransportOrders.getAll().then((res) => {
-    setOrders(res.data);  // <-- itt tömb jön vissza?
-    console.log("Transport orders:", res.data);  // DEBUG
-    api.Transcomp.getAll().then(res => setTranscomps(res.data));
-  });
-}, []);
+    api.TransportOrders.getAll().then((res) => {
+      setOrders(res.data);
+      console.log("Transport orders:", res.data);
+    });
+  }, []);
 
-  const assignTransport = (orderId: number) => {
-    const transportId = selectedTransportIds[orderId];
-    const loadDate = selectedDates[orderId];
+  const handleStatusChange = (orderId: number, newStatus: string | null) => {
+    if (!newStatus) return;
+    setStatusUpdates(prev => ({ ...prev, [orderId]: newStatus }));
 
-    if (!transportId || !loadDate) return;
+    const order = orders.find(o => o.id === orderId);
+    const loadDate = order?.load_date || null;
 
-    api.TransportOrders.assignTransport(orderId, {
-      transport_id: transportId,
-      status: "in transit",
-      load_date: new Date(loadDate).toISOString()
+    api.TransportOrders.updateStatus(orderId, {
+      status: newStatus,
+      load_date: loadDate
     }).then(() => {
       api.TransportOrders.getAll().then(res => setOrders(res.data));
     });
   };
 
-  const rows = orders.map(order => {
-    const items = order.items?.map(i => `${i.product_name} x${i.quantity}`).join(", ") || "Nincs adat";
-    const userInfo = `${order.user_name}, ${order.user_address}`;
+  // const statusOptions = [
+  //   { value: "assigned", label: "Hozzárendelve" },
+  //   { value: "in transit", label: "Kiszállítás alatt" },
+  //   { value: "delivered", label: "Kézbesítve" },
+  //   { value: "cancelled", label: "Lemondva" }
+  // ];
 
-    return (
-      <Table.Tr key={order.id}>
-        <Table.Td>{order.id}</Table.Td>
-        <Table.Td>{userInfo}</Table.Td>
-        <Table.Td>{items}</Table.Td>
-        <Table.Td>{order.transport_company || "-"} / {order.transport_truck || "-"}</Table.Td>
-        <Table.Td><Badge>{order.status}</Badge></Table.Td>
-        <Table.Td>
-          <Stack gap="xs">
-            <Select
-              placeholder="Fuvarozó kiválasztása"
-              data={transcomps.map(tc => ({
-                value: tc.id.toString(),
-                label: `${tc.company} - ${tc.truck}`
-              }))}
-              onChange={val => setSelectedTransportIds(prev => ({
-                ...prev,
-                [order.id]: Number(val)
-              }))}
-            />
-            <TextInput
-              type="date"
-              value={selectedDates[order.id] || ""}
-              onChange={e => setSelectedDates(prev => ({
-                ...prev,
-                [order.id]: e.currentTarget.value
-              }))}
-              placeholder="Rakodás dátuma"
-            />
-            <Button
-              onClick={() => assignTransport(order.id)}
-              disabled={!selectedTransportIds[order.id] || !selectedDates[order.id]}
-            >
-              Mentés
-            </Button>
-          </Stack>
-        </Table.Td>
-      </Table.Tr>
-    );
-  });
+  const rows = orders.map(order => (
+    <Table.Tr key={order.id}>
+      <Table.Td>{order.id}</Table.Td>
+      <Table.Td>
+        <Text fw={700} ta="left">{order.user_name}</Text>
+        <Text size="sm" ta="left">{order.user_address}</Text>
+      </Table.Td>
+      {order.items && order.items.length > 0 ? (
+        <>
+          <Table.Td>
+            {order.items.map((item, idx) => (
+              <Text key={idx} ta="left">{item.product_name}</Text>
+            ))}
+          </Table.Td>
+          <Table.Td>
+            {order.items.map((item, idx) => (
+              <Text key={idx} ta="left">{item.quantity}</Text>
+            ))}
+          </Table.Td>
+        </>
+      ) : (
+        <>
+          <Table.Td>Nincs adat</Table.Td>
+          <Table.Td>-</Table.Td>
+        </>
+      )}
+      <Table.Td>
+        <Text fw={700} ta="left">{order.transport_company || "-"}</Text>
+        <Text size="sm" ta="left">{order.transport_truck || "-"}</Text>
+      </Table.Td>
+      {/* <Table.Td> */}
+        {/* <Select
+          placeholder="Státusz"
+          data={statusOptions}
+          value={order.status}
+          onChange={(val) => handleStatusChange(order.id, val)}
+        /> */}
+      {/* </Table.Td> */}
+      <Table.Td>
+        <Text ta="left">{order.load_date ? new Date(order.load_date).toLocaleDateString() : "-"}</Text>
+      </Table.Td>
+    </Table.Tr>
+  ));
 
   return (
     <Card withBorder shadow="sm" p="lg">
-      <Text fz="xl" mb="md">Fuvarfeladatok</Text>
+      <Group justify="space-between" mb="md">
+        <Text fz="xl">Fuvarfeladatok</Text>
+        <Button onClick={() => navigate('add')}>
+          Új fuvarfeladat
+        </Button>
+      </Group>
       <Table>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>ID</Table.Th>
             <Table.Th>Megrendelő</Table.Th>
-            <Table.Th>Termékek</Table.Th>
+            <Table.Th>Termék</Table.Th>
+            <Table.Th>Mennyiség</Table.Th>
             <Table.Th>Szállító</Table.Th>
-            <Table.Th>Státusz</Table.Th>
-            <Table.Th>Hozzárendelés</Table.Th>
+            {/* <Table.Th>Státusz</Table.Th> */}
+            <Table.Th>Rakodás dátuma</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
@@ -113,3 +115,4 @@ const TransportOrders = () => {
 };
 
 export default TransportOrders;
+

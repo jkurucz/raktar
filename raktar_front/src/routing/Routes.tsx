@@ -9,6 +9,11 @@ import Users from "../pages/Users.tsx";
 import UserForm from "../pages/UserForm.tsx";
 import Transcomp from "../pages/Transcomp.tsx";
 import Transport from "../pages/Transport.tsx";
+import TransportOrderAdd from "../pages/TransportOrderAdd.tsx";
+import Complaints from "../pages/Complaints.tsx";
+import ComplaintForm from "../pages/ComplaintForm.tsx";
+import Warehouse from "../pages/Warehouse.tsx";
+import Profile from "../pages/Profil.tsx";
 
 export const routes = [
     {
@@ -71,4 +76,30 @@ export const routes = [
         component: <Transport />,
         isPrivate: true
     },
+    {
+        path: "transport/add",
+        component: <TransportOrderAdd />,
+        isPrivate: true
+    },
+    {
+        path: "complaints",
+        component: <Complaints />,
+        isPrivate: true
+    },
+    {
+        path: "orders/:orderId/complaint",
+        component: <ComplaintForm />,
+        isPrivate: true
+    },
+    {
+        path: "warehouse",
+        component: <Warehouse />,
+        isPrivate: true
+    },
+    {
+        path: "profile",
+        component: <Profile />,
+        isPrivate: true
+    },
+
 ]

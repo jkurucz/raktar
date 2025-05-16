@@ -25,6 +25,7 @@ class Order(db.Model):
     items: Mapped[List["OrderItem"]] = relationship(back_populates="order", cascade="all, delete-orphan")
     statuses: Mapped[List["OrderStatus"]] = relationship(back_populates="order", cascade="all, delete-orphan")
     complaints: Mapped[List["Complaint"]] = relationship(back_populates="order", cascade="all, delete-orphan")
+    transport_orders = relationship("TransportOrder", back_populates="order", lazy="dynamic")
 
     def __repr__(self) -> str:
         return f"Order(id={self.id!r}, user_id={self.user_id!r}, closed={self.closed!r})"

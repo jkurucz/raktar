@@ -9,12 +9,13 @@ from app.blueprints.warehouse.schemas import (
     TransportOrderSchema
 )
 from app.blueprints.warehouse.service import WarehouseService
-
+from app.models.warehouse import Warehouse
+from app.blueprints.warehouse.schemas import WarehouseSchema
 
 # Raktárkészlet frissítése – csak Admin vagy LogisticsManager
 @bp.post('/warehouse-stocks')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin", "User"])
 @bp.input(StockUpdateSchema, location="json")
 @bp.output(WarehouseStockSchema)
 def warehouse_update_stock(json_data):
@@ -27,7 +28,7 @@ def warehouse_update_stock(json_data):
 # Raktárkészlet lekérdezése – Admin / LogisticsManager / Chef
 @bp.get('/warehouse-stocks/<int:warehouse_id>')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager", "Chef"])
+@role_required(["Admin", "LogisticsManager", "User"])
 @bp.output(WarehouseStockSchema(many=True))
 def warehouse_list_stock(warehouse_id):
     return WarehouseService.get_warehouse_stock(warehouse_id)
@@ -36,7 +37,7 @@ def warehouse_list_stock(warehouse_id):
 # Szállítás hozzárendelés – csak Admin vagy LogisticsManager
 @bp.post('/transport-orders')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin"])
 @bp.input(TransportAssignSchema, location="json")
 @bp.output(TransportOrderSchema)
 def warehouse_assign_transport(json_data):
@@ -44,3 +45,11 @@ def warehouse_assign_transport(json_data):
     if success:
         return response
     raise HTTPError(message=response, status_code=400)
+
+# Új: Raktárak lekérdezése
+@bp.get('/warehouses')
+@bp.auth_required(auth)
+@role_required(["Admin", "LogisticsManager"])
+@bp.output(WarehouseSchema(many=True))
+def warehouse_list():
+    return Warehouse.query.all()

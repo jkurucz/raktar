@@ -4,7 +4,14 @@ import {
     IconUserCircle,
     IconLogout,
     IconHome,
-    IconBox
+    IconBox,
+    IconTruck,
+    IconTruckDelivery,
+    IconTruckLoading,
+    IconAccessible,
+    IconAlertCircle,
+    IconArchive,
+    IconBrandAppgallery
 } from "@tabler/icons-react";
 import classes from "./NavbarMinimalColored.module.css";
 import {useNavigate} from "react-router-dom";
@@ -56,33 +63,45 @@ export function NavbarMinimal({toggle}: any) {
             roles: ['Admin', 'Warehouse', 'Transport', 'User', 'Other']
         },
         {
-            icon: IconHome,
+            icon: IconAccessible ,
             label: "Felhasználók",
             url: "users",
             roles: ['Admin']
         },
         {
-            icon: IconBox,
+            icon: IconBrandAppgallery ,
             label: "Termékek",
             url: "product",
             roles: ['Admin','Warehouse', 'Transport', 'User', 'Other']
         },
         {
             icon: IconBox,
-            label: "Rendeléseim",
+            label: "Raktár",
+            url: "warehouse",
+            roles: ['Admin','Warehouse', 'Transport', 'Other']
+        },
+        {
+            icon: IconArchive ,
+            label: "Rendelések",
             url: "orders",
             roles: ['Admin','Warehouse', 'Transport', 'User', 'Other']
         },
         {
-            icon: IconBox,
+            icon: IconTruck ,
             label: "Fuvarozók",
             url: "transcomp",
             roles: ['Admin']
         },
         {
-            icon: IconBox,
+            icon: IconTruckLoading ,
             label: "Szállítások",
             url: "transport",
+            roles: ['Admin']
+        },
+        {
+            icon: IconAlertCircle ,
+            label: "Panaszok",
+            url: "complaints",
             roles: ['Admin']
         }
     ];

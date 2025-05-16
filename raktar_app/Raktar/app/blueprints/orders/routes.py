@@ -10,6 +10,10 @@ from app.blueprints.orders.schemas import (
     OrderStatusCreateSchema
 )
 from app.blueprints.orders.service import OrderService
+from sqlalchemy import select
+from app.models.transport_order import TransportOrder
+from app.models.order import Order
+from app.extensions import db
 
 
 # Új rendelés létrehozása – bárki bejelentkezett felhasználó
@@ -106,3 +110,14 @@ def order_add_status(order_id, json_data):
 @bp.output(OrderResponseSchema(many=True))
 def order_list_all():
     return OrderService.list_all_orders()
+
+@bp.get('/unassigned')
+@bp.auth_required(auth)
+@role_required(["Admin", "Transport", "Warehouse"])
+@bp.output(OrderResponseSchema(many=True))
+def get_unassigned_orders():
+    subquery = select(TransportOrder.order_id).scalar_subquery()
+    orders = db.session.scalars(
+        select(Order).where(~Order.id.in_(subquery))
+    ).all()
+    return orders
