@@ -12,7 +12,7 @@ from app.blueprints.suppliers.service import SupplierService
 # Új beszállítás rögzítése
 @bp.post('/supplies')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin"])
 @bp.input(SupplyFormSchema, location="json")
 @bp.output(SupplyResponseSchema)
 def supply_create(json_data):
@@ -25,7 +25,7 @@ def supply_create(json_data):
 # Összes beszállítás listázása
 @bp.get('/supplies')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin"])
 @bp.output(SupplyResponseSchema(many=True))
 def supply_list_all():
     return SupplierService.list_all_supplies()
@@ -34,7 +34,7 @@ def supply_list_all():
 # Egy beszállítás lekérdezése
 @bp.get('/supplies/<int:supply_id>')
 @bp.auth_required(auth)
-@role_required(["Administrator", "LogisticsManager"])
+@role_required(["Admin"])
 @bp.output(SupplyResponseSchema)
 def supply_get_by_id(supply_id):
     supply = SupplierService.get_supply_by_id(supply_id)
@@ -43,10 +43,10 @@ def supply_get_by_id(supply_id):
     raise HTTPError(message="Supply not found", status_code=404)
 
 
-# Beszállítás törlése (csak Admin)
+# Beszállítás törlése 
 @bp.delete('/supplies/<int:supply_id>')
 @bp.auth_required(auth)
-@role_required(["Administrator"])
+@role_required(["Admin"])
 def supply_delete(supply_id):
     success = SupplierService.delete_supply(supply_id)
     if success:

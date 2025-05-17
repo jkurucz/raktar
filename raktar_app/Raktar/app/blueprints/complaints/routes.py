@@ -40,7 +40,7 @@ def complaint_list_all():
 #     return ComplaintService.list_complaints(user_id)
 
 
-# Adott rendelés panaszainak lekérdezése – csak a rendelés tulajdonosa vagy Admin
+# Adott rendelés panaszainak lekérdezése
 @bp.get('/orders/<int:order_id>/complaints')
 @bp.auth_required(auth)
 @role_required(["Admin"])

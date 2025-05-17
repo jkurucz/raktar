@@ -177,18 +177,17 @@ class UserService:
     @staticmethod
     def user_registrate(data):
         try:
-            # Ellenőrizzük, hogy van-e már ilyen e-mail
+
             if db.session.execute(select(User).filter_by(email=data["email"])).scalar_one_or_none():
                 return False, "E-mail already exists!"
 
-            # Létrehozzuk a címet és a felhasználót
             address_data = data.pop("address")
             address = Address(**address_data)
             user = User(**data)
             user.set_password(user.password)
             user.addresses = [address]
 
-            # Hozzáadjuk az alap "User" szerepkört
+
             user.roles.append(
                 db.session.execute(select(Role).filter_by(name="User")).scalar_one()
             )
@@ -286,10 +285,9 @@ class UserService:
     
     @staticmethod
     def get_all_users():
-        # itt csak visszaadod a lekerdezest, kikered a usereket
+
         return db.session.scalars(select(User)).all()
     
-    #felhasználó módosítása
     @staticmethod
     def safe_update_user(user_id, update_data):
         try:
@@ -297,20 +295,19 @@ class UserService:
             if user is None:
                 return False, "User not found!"
     
-            # Alapadatok frissítése (ha meg van adva)
+
             for key in ['name', 'email', 'phone']:
                 if key in update_data and hasattr(user, key):
                     setattr(user, key, update_data[key])
     
-            # Cím frissítése – régiek törlése, új hozzáadása
             if "address" in update_data:
-                user.addresses.clear()  # 🔥 régi cím(ek) törlése
+                user.addresses.clear() 
                 new_addr = Address(**update_data["address"])
                 user.addresses.append(new_addr)
     
-            # Szerepkörök teljes cseréje
+
             if "roles" in update_data:
-                user.roles.clear()  # 🔥 törli az eddigieket
+                user.roles.clear()  
                 for role_name in update_data["roles"]:
                     role_obj = db.session.execute(
                         select(Role).filter_by(name=role_name)

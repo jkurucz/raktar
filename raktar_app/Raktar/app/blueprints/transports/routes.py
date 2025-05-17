@@ -12,7 +12,7 @@ from app.blueprints.transports.schemas import (
 from app.blueprints.transports.service import TransportService
 
 
-# 🔎 Összes szállítás listázása 
+# Összes szállítás listázása 
 @bp.get('/')
 @bp.auth_required(auth)
 @role_required(["Admin", "Transport", "Warehouse"])
@@ -22,7 +22,7 @@ def transport_list_all():
 
 
 
-# 🔍 Egy konkrét szállítás lekérdezése 
+# Egy konkrét szállítás lekérdezése 
 @bp.get('/<int:transport_id>')
 @bp.auth_required(auth)
 @role_required(["Admin", "Transport"])
@@ -37,7 +37,7 @@ def transport_get_by_id(transport_id):
     return transport
 
 
-# ✏️ Szállítás státuszának frissítése 
+# Szállítás státuszának frissítése 
 @bp.patch('/<int:transport_id>')
 @bp.auth_required(auth)
 @role_required(["Transport", "Admin"])
@@ -52,7 +52,7 @@ def transport_update_status(transport_id, json_data):
         new_status=json_data["status"],
         current_user_id=current_user_id,
         roles=current_roles,
-        load_date=json_data.get("load_date")  # ⬅️ opcionálisan átadjuk a dátumot
+        load_date=json_data.get("load_date")  
     )
 
     if not updated:
@@ -65,7 +65,7 @@ def transport_update_status(transport_id, json_data):
 @role_required(["Transport", "Admin"])
 @bp.input(TransportAssignSchema, location="json")
 @bp.output(TransportResponseSchema)
-def transport_assign_vehicle(transport_id, json_data):  # ✅ Itt a "json_data" legyen a név!
+def transport_assign_vehicle(transport_id, json_data):  
     updated = TransportService.assign_vehicle(transport_id, json_data)
     if not updated:
         raise HTTPError(status_code=404, message="Hozzárendelés sikertelen vagy nem található")
@@ -75,7 +75,7 @@ def transport_assign_vehicle(transport_id, json_data):  # ✅ Itt a "json_data" 
 @bp.post('/')
 @bp.auth_required(auth)
 @role_required(["Transport", "Admin"])
-@bp.input(TransportCreateSchema, location="json")  # <-- ezt használd itt
+@bp.input(TransportCreateSchema, location="json")  
 @bp.output(TransportResponseSchema, status_code=201)
 def create_transport_order(json_data):
     created = TransportService.create_new_transport_order(json_data)

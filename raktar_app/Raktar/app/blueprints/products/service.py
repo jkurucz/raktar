@@ -28,8 +28,7 @@ class ProductService:
         try:
             product = Product(**data)
             db.session.add(product)
-            db.session.flush()   # hogy product.id már meglegyen!
-            # Minden warehouse-hoz 0-s készlet
+            db.session.flush() 
             warehouses = db.session.scalars(select(Warehouse)).all()
             for warehouse in warehouses:
                 stock = WarehouseStock(

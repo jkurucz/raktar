@@ -1,7 +1,5 @@
 from functools import wraps
-
 from apiflask import APIBlueprint
-
 from app.extensions import auth
 from flask import current_app
 from authlib.jose import jwt

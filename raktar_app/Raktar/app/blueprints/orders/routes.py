@@ -40,10 +40,10 @@ def order_list_my():
     return OrderService.list_user_orders(user_id)
 
 
-# Egy rendelés lekérdezése (saját vagy admin)
+# Egy rendelés lekérdezése
 @bp.get('/<int:order_id>')
 @bp.auth_required(auth)
-@role_required(["Admin", "Chef"])
+@role_required(["Admin"])
 @bp.output(OrderResponseSchema)
 def order_get_by_id(order_id):
     user_id = auth.current_user.get("user_id")
@@ -53,10 +53,10 @@ def order_get_by_id(order_id):
     raise HTTPError(message=response, status_code=404)
 
 
-# ✏Rendelés módosítása (saját vagy admin)
+# ✏Rendelés módosítása 
 @bp.put('/<int:order_id>')
 @bp.auth_required(auth)
-@role_required(["Admin", "Chef"])
+@role_required(["Admin"])
 @bp.input(OrderUpdateSchema, location="json")
 @bp.output(OrderResponseSchema)
 def order_update(order_id, json_data):
@@ -67,10 +67,10 @@ def order_update(order_id, json_data):
     raise HTTPError(message=response, status_code=400)
 
 
-# Rendelés lezárása (saját vagy admin)
+# Rendelés lezárása 
 @bp.post('/<int:order_id>/close')
 @bp.auth_required(auth)
-@role_required(["Admin", "Chef"])
+@role_required(["Admin"])
 def order_close(order_id):
     user_id = auth.current_user.get("user_id")
     success, response = OrderService.close_order(order_id, user_id)
@@ -79,20 +79,20 @@ def order_close(order_id):
     raise HTTPError(message=response, status_code=400)
 
 
-# Státuszok lekérdezése – saját vagy admin
+# Státuszok lekérdezése 
 @bp.get('/<int:order_id>/statuses')
 @bp.auth_required(auth)
-@role_required(["Admin", "Chef"])
+@role_required(["Admin"])
 @bp.output(OrderStatusSchema(many=True))
 def order_list_statuses(order_id):
     user_id = auth.current_user.get("user_id")
     return OrderService.get_order_statuses(order_id, user_id)
 
 
-# Új státusz hozzáadása – csak Admin vagy Chef
+# Új státusz hozzáadása 
 @bp.post('/<int:order_id>/statuses')
 @bp.auth_required(auth)
-@role_required(["Admin", "Chef"])
+@role_required(["Admin"])
 @bp.input(OrderStatusCreateSchema, location="json")
 @bp.output(OrderStatusSchema)
 def order_add_status(order_id, json_data):
@@ -111,6 +111,8 @@ def order_add_status(order_id, json_data):
 def order_list_all():
     return OrderService.list_all_orders()
 
+
+# szállítás amihez nincs hozzárendelve fuvarozó
 @bp.get('/unassigned')
 @bp.auth_required(auth)
 @role_required(["Admin", "Transport", "Warehouse"])

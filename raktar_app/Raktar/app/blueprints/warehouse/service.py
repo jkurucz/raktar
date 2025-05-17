@@ -16,9 +16,7 @@ class WarehouseService:
 
     @staticmethod
     def update_warehouse_stock(data):
-        """
-        Új készlet létrehozása vagy meglévő frissítése adott raktárban.
-        """
+
         try:
             stmt = select(WarehouseStock).where(
                 WarehouseStock.product_id == data["product_id"],
@@ -27,12 +25,12 @@ class WarehouseService:
             stock = db.session.execute(stmt).scalar_one_or_none()
 
             if stock:
-    # NE engedje, hogy negatívba menjen!
+
                 if stock.quantity + data["quantity"] < 0:
                     return False, "A készlet nem lehet negatív!"
                 stock.quantity += data["quantity"]
             else:
-                # Ha új készletet hozol létre, minimum 0 legyen (ha valaki -1-gyel akarja felvinni, az se menjen)
+                
                 if data["quantity"] < 0:
                     return False, "A készlet nem lehet negatív!"
                 stock = WarehouseStock(
@@ -53,9 +51,7 @@ class WarehouseService:
 
     @staticmethod
     def get_warehouse_stock(warehouse_id):
-        """
-        Lekéri az adott raktárhoz tartozó készletlistát.
-        """
+
         stocks = db.session.scalars(
             select(WarehouseStock).where(WarehouseStock.warehouse_id == warehouse_id)
         ).all()
@@ -63,14 +59,12 @@ class WarehouseService:
 
     @staticmethod
     def assign_transport(data):
-        """
-        Új szállítási megbízás hozzárendelése rendeléshez.
-        """
+
         try:
             transport_order = TransportOrder(
                 order_id=data["order_id"],
                 carrier_id=data["carrier_id"],
-                transport_id=data.get("transport_id"),  # lehet None is
+                transport_id=data.get("transport_id"),  
                 load_date=datetime.now(timezone.utc)
             )
             db.session.add(transport_order)

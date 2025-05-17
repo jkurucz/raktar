@@ -18,7 +18,7 @@ def get_all():
 @role_required(["Admin", "Transport"])
 @bp.input(TransportSchema, location='json')
 @bp.output(TransportSchema)
-def create(json_data):  # ✅ legyen json_data
+def create(json_data): 
     success, result = TransportService.create_transcomp(json_data)
     if success:
         return result

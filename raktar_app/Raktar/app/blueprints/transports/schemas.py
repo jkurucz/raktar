@@ -21,8 +21,8 @@ class TransportResponseSchema(Schema):
     status = String()
     updated_at = DateTime()
     load_date = DateTime()
-    user_name = String()         # új
-    user_address = String()      # új
+    user_name = String()         
+    user_address = String()      
     items = fields.List(fields.Nested(TransportItemSchema)) 
     transport_company = String(allow_none=True)
     transport_truck = String(allow_none=True)

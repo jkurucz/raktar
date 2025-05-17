@@ -25,7 +25,7 @@ def warehouse_update_stock(json_data):
     raise HTTPError(message=response, status_code=400)
 
 
-# Raktárkészlet lekérdezése – Admin / LogisticsManager / Chef
+# Raktárkészlet lekérdezése 
 @bp.get('/warehouse-stocks/<int:warehouse_id>')
 @bp.auth_required(auth)
 @role_required(["Admin", "Warehouse", "User", "Transport", "Supplier"])
@@ -34,7 +34,7 @@ def warehouse_list_stock(warehouse_id):
     return WarehouseService.get_warehouse_stock(warehouse_id)
 
 
-# Szállítás hozzárendelés – csak Admin vagy LogisticsManager
+# Szállítás hozzárendelés 
 @bp.post('/transport-orders')
 @bp.auth_required(auth)
 @role_required(["Admin"])

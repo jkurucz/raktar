@@ -13,7 +13,7 @@ class OrderService:
     def create_order(user_id, data):
         order = Order(user_id=user_id, order_date=datetime.utcnow(), closed=False)
         db.session.add(order)
-        db.session.flush()  # lekérjük az order.id-t
+        db.session.flush()  
 
         for item in data['items']:
             db.session.add(OrderItem(order_id=order.id, **item))
@@ -28,7 +28,6 @@ class OrderService:
         ).all()
     
         for order in orders:
-            # Ügyfél adatok
             order.user_name = order.user.name if order.user else "-"
             order.user_phone = order.user.phone if order.user and hasattr(order.user, "phone") else "-"
             if order.user and order.user.addresses and len(order.user.addresses) > 0:
@@ -37,7 +36,6 @@ class OrderService:
             else:
                 order.user_address = "-"
     
-            # Fuvar adatok (legutóbbi transport order, ha van)
             tos = order.transport_orders.order_by(TransportOrder.load_date.desc()).all()
             transport_order = tos[0] if tos else None
     
@@ -120,15 +118,10 @@ class OrderService:
         db.session.commit()
         return True, status
     
-    # @staticmethod
-    # def list_all_orders():
-    #     return Order.query.all()
-
     @staticmethod
     def list_all_orders():
         orders = Order.query.all()
         for order in orders:
-            # Ügyfél adatok
             order.user_name = order.user.name if order.user else "-"
             order.user_phone = order.user.phone if order.user and hasattr(order.user, "phone") else "-"
             if order.user and order.user.addresses and len(order.user.addresses) > 0:
@@ -137,7 +130,6 @@ class OrderService:
             else:
                 order.user_address = "-"
 
-            # Fuvar adatok (legutóbbi transport order, ha van)
             tos = order.transport_orders.order_by(TransportOrder.load_date.desc()).all()
             transport_order = tos[0] if tos else None
 

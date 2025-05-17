@@ -28,16 +28,14 @@ class TransportService:
         ).unique().scalars().all()
     
         for t in transports:
-            # Felhasználó neve
+ 
             t.user_name = t.order.user.name if t.order and t.order.user else "-"
-    
-            # Olvasható cím formázása
+
             t.user_address = (
                 f"{addr.country}, {addr.postalcode} {addr.city}, {addr.street}"
                 if (addr := t.order.user.addresses[0]) else "-"
             ) if t.order and t.order.user and t.order.user.addresses else "-"
-    
-            # Termékek neve és mennyisége
+
             t.items = [
                 {
                     "product_name": item.product.product_name,
@@ -46,7 +44,7 @@ class TransportService:
                 for item in t.order.items if item.product
             ] if t.order and t.order.items else []
     
-            # Fuvarozó cég és rendszám
+   
             t.transport_company = t.transport.company if t.transport else None
             t.transport_truck = t.transport.truck if t.transport else None
     
@@ -54,31 +52,25 @@ class TransportService:
 
     @staticmethod
     def get_transport_by_id(transport_id, current_user_id=None, roles=None):
-        """
-        Egy konkrét szállítás lekérdezése.
-        Ha Carrier, csak a sajátját láthatja.
-        """
+  
         transport = db.session.get(TransportOrder, transport_id)
         if not transport:
             return None
 
         if roles and "Carrier" in roles and transport.carrier_id != current_user_id:
-            return None  # jogosulatlan
+            return None  
 
         return transport
 
     @staticmethod
     def update_transport_status(transport_id, new_status, current_user_id=None, roles=None, load_date=None):
-        """
-        Szállítás státuszának frissítése, és opcionálisan a rakodási dátum beállítása.
-        Carrier csak a saját fuvarját módosíthatja.
-        """
+
         transport = db.session.get(TransportOrder, transport_id)
         if not transport:
             return None
 
         if roles and "Carrier" in roles and transport.carrier_id != current_user_id:
-            return None  # jogosulatlan
+            return None  
 
         transport.status = new_status
         if load_date:
@@ -111,7 +103,7 @@ class TransportService:
         transport_order = TransportOrder(
             order_id=data["order_id"],
             transport_id=data["transport_id"],
-            carrier_id=auth.current_user["user_id"],  # ha van auth
+            carrier_id=auth.current_user["user_id"],  
             load_date=data["load_date"],
             direction=data.get("direction", "out")
         )

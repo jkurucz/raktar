@@ -7,7 +7,7 @@ from datetime import datetime
 def add_user_name_to_complaints(complaints):
     for c in complaints:
         c.user_name = c.user.name if c.user else str(c.user_id)
-        # order items: (csak ha van order reláció)
+
         if hasattr(c, "order") and c.order and hasattr(c.order, "items"):
             c.order_items = [
                 {
@@ -24,9 +24,7 @@ class ComplaintService:
 
     @staticmethod
     def create_complaint(order_id: int, user_id: int, data: dict):
-        """
-        Panasz létrehozása saját rendeléshez.
-        """
+
         order = db.session.get(Order, order_id)
         if not order:
             return False, "Order not found"
@@ -46,9 +44,7 @@ class ComplaintService:
 
     @staticmethod
     def list_complaints(user_id: int):
-        """
-        Saját panaszok listázása.
-        """
+
         complaints = db.session.scalars(
             select(Complaint).where(Complaint.user_id == user_id)
         ).all()
@@ -56,9 +52,7 @@ class ComplaintService:
 
     @staticmethod
     def list_all_complaints():
-        """
-        Összes panasz listázása (Admin számára).
-        """
+
         complaints = db.session.scalars(
             select(Complaint)
         ).all()
@@ -66,10 +60,7 @@ class ComplaintService:
 
     @staticmethod
     def list_order_complaints(order_id: int, user_id: int, roles: list):
-        """
-        Adott rendelés panaszainak lekérdezése.
-        Csak a rendelés tulajdonosa vagy Admin láthatja.
-        """
+ 
         order = db.session.get(Order, order_id)
         if not order:
             return False, "Order not found"

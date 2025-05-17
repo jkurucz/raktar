@@ -90,7 +90,7 @@ class ChangePasswordSchema(Schema):
     current_password = fields.String(required=True, validate=Length(min=6))
     new_password = fields.String(required=True, validate=Length(min=6))
 
-#jelszó nélküli userUpdate:
+
 class UserUpdateWithoutPasswordSchema(Schema):
     name = fields.String(required=False)
     email = fields.Email(required=False)
