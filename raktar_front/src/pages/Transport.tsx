@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { ITransportOrder } from "../interfaces/ITransportOrder";
 import { useNavigate } from "react-router-dom";
+import { roleKeyName } from "../constants/constants.ts";
 
 const TransportOrders = () => {
   const [orders, setOrders] = useState<ITransportOrder[]>([]);
@@ -21,6 +22,8 @@ const TransportOrders = () => {
       console.log("Transport orders:", res.data);
     });
   }, []);
+
+  const role = localStorage.getItem(roleKeyName);
 
   const handleStatusChange = (orderId: number, newStatus: string | null) => {
     if (!newStatus) return;
@@ -36,13 +39,6 @@ const TransportOrders = () => {
       api.TransportOrders.getAll().then(res => setOrders(res.data));
     });
   };
-
-  // const statusOptions = [
-  //   { value: "assigned", label: "Hozzárendelve" },
-  //   { value: "in transit", label: "Kiszállítás alatt" },
-  //   { value: "delivered", label: "Kézbesítve" },
-  //   { value: "cancelled", label: "Lemondva" }
-  // ];
 
   const rows = orders.map(order => (
     <Table.Tr key={order.id}>
@@ -92,9 +88,14 @@ const TransportOrders = () => {
     <Card withBorder shadow="sm" p="lg">
       <Group justify="space-between" mb="md">
         <Text fz="xl">Fuvarfeladatok</Text>
+        {/* <Button onClick={() => navigate('add')}>
+          Új fuvarfeladat
+        </Button> */}
+              {(role === 'Admin' || role === 'Transport' )&& (
         <Button onClick={() => navigate('add')}>
           Új fuvarfeladat
         </Button>
+      )}
       </Group>
       <Table>
         <Table.Thead>

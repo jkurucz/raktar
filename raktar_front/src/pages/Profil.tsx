@@ -1,4 +1,4 @@
-// pages/Profile.tsx
+
 
 import { useEffect, useState } from "react";
 import { Card, TextInput, Button, Text, Group, Stack } from "@mantine/core";
@@ -107,7 +107,7 @@ const Profile = () => {
             </>
           )}
           <Text>
-            <b>Szerepkör(ök):</b> {user?.roles.map(r => r.name).join(", ")}
+            <b>Szerepkör:</b> {user?.roles.map(r => r.name).join(", ")}
           </Text>
           <Group>
             <Button type="submit">Mentés</Button>

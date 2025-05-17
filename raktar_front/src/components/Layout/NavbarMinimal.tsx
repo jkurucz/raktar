@@ -6,7 +6,6 @@ import {
     IconHome,
     IconBox,
     IconTruck,
-    IconTruckDelivery,
     IconTruckLoading,
     IconAccessible,
     IconAlertCircle,
@@ -60,7 +59,7 @@ export function NavbarMinimal({toggle}: any) {
             icon: IconHome,
             label: "Kezdőlap",
             url: "dashboard",
-            roles: ['Admin', 'Warehouse', 'Transport', 'User', 'Other']
+            roles: ['Admin', 'Warehouse', 'Transport', 'User', 'Supplier']
         },
         {
             icon: IconAccessible ,
@@ -72,31 +71,31 @@ export function NavbarMinimal({toggle}: any) {
             icon: IconBrandAppgallery ,
             label: "Termékek",
             url: "product",
-            roles: ['Admin','Warehouse', 'Transport', 'User', 'Other']
+            roles: ['Admin','Warehouse', 'User', 'Supplier']
         },
         {
             icon: IconBox,
             label: "Raktár",
             url: "warehouse",
-            roles: ['Admin','Warehouse', 'Transport', 'Other']
+            roles: ['Admin','Warehouse', 'Transport', 'Supplier']
         },
         {
             icon: IconArchive ,
             label: "Rendelések",
             url: "orders",
-            roles: ['Admin','Warehouse', 'Transport', 'User', 'Other']
+            roles: ['Admin','Warehouse', 'Transport', 'User']
         },
         {
             icon: IconTruck ,
             label: "Fuvarozók",
             url: "transcomp",
-            roles: ['Admin']
+            roles: ['Admin', 'Transport']
         },
         {
             icon: IconTruckLoading ,
             label: "Szállítások",
             url: "transport",
-            roles: ['Admin']
+            roles: ['Admin','Warehouse', 'Transport']
         },
         {
             icon: IconAlertCircle ,

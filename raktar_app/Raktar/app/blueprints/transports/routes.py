@@ -15,7 +15,7 @@ from app.blueprints.transports.service import TransportService
 # 🔎 Összes szállítás listázása 
 @bp.get('/')
 @bp.auth_required(auth)
-@role_required(["Admin", "Transport"])
+@role_required(["Admin", "Transport", "Warehouse"])
 @bp.output(TransportResponseSchema(many=True))
 def transport_list_all():
     return TransportService.list_transports()

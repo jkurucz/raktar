@@ -12,10 +12,10 @@ from app.blueprints.warehouse.service import WarehouseService
 from app.models.warehouse import Warehouse
 from app.blueprints.warehouse.schemas import WarehouseSchema
 
-# Raktárkészlet frissítése – csak Admin vagy LogisticsManager
+# Raktárkészlet frissítése 
 @bp.post('/warehouse-stocks')
 @bp.auth_required(auth)
-@role_required(["Admin", "User"])
+@role_required(["Admin", "User", "Warehouse", "Supplier"])
 @bp.input(StockUpdateSchema, location="json")
 @bp.output(WarehouseStockSchema)
 def warehouse_update_stock(json_data):
@@ -28,7 +28,7 @@ def warehouse_update_stock(json_data):
 # Raktárkészlet lekérdezése – Admin / LogisticsManager / Chef
 @bp.get('/warehouse-stocks/<int:warehouse_id>')
 @bp.auth_required(auth)
-@role_required(["Admin", "LogisticsManager", "User"])
+@role_required(["Admin", "Warehouse", "User", "Transport", "Supplier"])
 @bp.output(WarehouseStockSchema(many=True))
 def warehouse_list_stock(warehouse_id):
     return WarehouseService.get_warehouse_stock(warehouse_id)
@@ -49,7 +49,7 @@ def warehouse_assign_transport(json_data):
 # Új: Raktárak lekérdezése
 @bp.get('/warehouses')
 @bp.auth_required(auth)
-@role_required(["Admin", "LogisticsManager"])
+@role_required(["Admin", "Warehouse", "Transport", "Supplier"])
 @bp.output(WarehouseSchema(many=True))
 def warehouse_list():
     return Warehouse.query.all()

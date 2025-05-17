@@ -51,7 +51,7 @@ export const routes = [
         component: <Users/>,
         isPrivate: true
     },
-      {
+    {
         path: "users/:id",
         component: <UserForm />,
         isPrivate: true
@@ -101,5 +101,6 @@ export const routes = [
         component: <Profile />,
         isPrivate: true
     },
+
 
 ]

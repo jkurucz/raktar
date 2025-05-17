@@ -43,7 +43,7 @@ const Transcomp = () => {
     <Card>
       <Text fz="xl" mb="md">Fuvarozók és Kamionok</Text>
       <Group>
-        <TextInput placeholder="Kamion típusa" value={truck} onChange={(e) => setTruck(e.currentTarget.value)} />
+        <TextInput placeholder="Kamion rendszám" value={truck} onChange={(e) => setTruck(e.currentTarget.value)} />
         <TextInput placeholder="Cég neve" value={company} onChange={(e) => setCompany(e.currentTarget.value)} />
         <Button onClick={handleAdd}>Hozzáadás</Button>
       </Group>

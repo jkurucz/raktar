@@ -9,12 +9,13 @@ from flask import request
 @bp.get("/")
 @bp.output(TransportSchema(many=True))
 @bp.auth_required(auth)
-@role_required(["Admin"])
+@role_required(["Admin", "Transport"])
 def get_all():
     return TransportService.list_all()
 
 @bp.post('/')
 @bp.auth_required(auth)
+@role_required(["Admin", "Transport"])
 @bp.input(TransportSchema, location='json')
 @bp.output(TransportSchema)
 def create(json_data):  # ✅ legyen json_data
@@ -25,7 +26,7 @@ def create(json_data):  # ✅ legyen json_data
 
 @bp.delete("/<int:trans_id>")
 @bp.auth_required(auth)
-@role_required(["Admin"])
+@role_required(["Admin", "Transport"])
 def delete(trans_id):
     success, response = TransportService.delete(trans_id)
     if success:
