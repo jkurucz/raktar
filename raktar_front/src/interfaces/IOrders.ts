@@ -20,4 +20,9 @@ export interface Order {
   user_phone?: string;
   user_address?: string;
   
+
+  //PRÓBA
+  transport_company?: string;
+  transport_truck?: string;
+  load_date?: string;
 }

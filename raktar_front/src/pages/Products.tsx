@@ -110,7 +110,7 @@ const Products = () => {
 
   return (
     <div>
-      {(role === 'Admin' || role === 'Warehouse' || 'Supplier' )&& (
+      {(role === 'Admin' || role === 'Warehouse' || role === 'Supplier' )&& (
         <Button onClick={() => navigate('add')}>Új Termék</Button>
       )}
       <Card shadow="sm" padding="lg" radius="md" withBorder>
