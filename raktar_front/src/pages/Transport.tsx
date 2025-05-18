@@ -13,7 +13,9 @@ import { roleKeyName } from "../constants/constants.ts";
 
 const TransportOrders = () => {
   const [orders, setOrders] = useState<ITransportOrder[]>([]);
-  const [statusUpdates, setStatusUpdates] = useState<{ [key: number]: string }>({});
+
+  // Ideiglenesen forgalomból kivonva!
+  //const [statusUpdates, setStatusUpdates] = useState<{ [key: number]: string }>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,20 +27,21 @@ const TransportOrders = () => {
 
   const role = localStorage.getItem(roleKeyName);
 
-  const handleStatusChange = (orderId: number, newStatus: string | null) => {
-    if (!newStatus) return;
-    setStatusUpdates(prev => ({ ...prev, [orderId]: newStatus }));
+  // Ideiglenesen forgalomból kivonva!
+  // const handleStatusChange = (orderId: number, newStatus: string | null) => {
+  //   if (!newStatus) return;
+  //   setStatusUpdates(prev => ({ ...prev, [orderId]: newStatus }));
 
-    const order = orders.find(o => o.id === orderId);
-    const loadDate = order?.load_date || null;
+  //   const order = orders.find(o => o.id === orderId);
+  //   const loadDate = order?.load_date || null;
 
-    api.TransportOrders.updateStatus(orderId, {
-      status: newStatus,
-      load_date: loadDate
-    }).then(() => {
-      api.TransportOrders.getAll().then(res => setOrders(res.data));
-    });
-  };
+  //   api.TransportOrders.updateStatus(orderId, {
+  //     status: newStatus,
+  //     load_date: loadDate
+  //   }).then(() => {
+  //     api.TransportOrders.getAll().then(res => setOrders(res.data));
+  //   });
+  // };
 
   const rows = orders.map(order => (
     <Table.Tr key={order.id}>

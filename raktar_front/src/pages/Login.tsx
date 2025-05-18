@@ -27,10 +27,13 @@ const Login = () => {
         },
     });
 
-
-    const submit = () => {
-        login(form.values.email, form.values.password)
-    }
+    const submit = async () => {
+  try {
+    await login(form.values.email, form.values.password);
+  } catch (err: any) {
+    alert("Nem megfelelő e-mail vagy jelszó!");
+  }
+};
 
     return <AuthContainer>
         <div>
