@@ -46,22 +46,18 @@ const ProductForm = ({isCreate}: IProductForm) => {
   return <div>
   
       <Text>{isCreate ? "Új termék létrehozása" : "Termék módosítása"}</Text>
-
-
-    {/* <p>{id}</p>
-    <p>{JSON.stringify(isCreate)}</p> */}
     
 
     <Card>
       <form onSubmit={form.onSubmit((values) => {
         console.log(values)
-        if (isCreate) { //létrehozás
+        if (isCreate) { 
           api.Products.createProduct({
             description: values.description,
             price: values.price,
             product_name: values.product_name
          }).then(() => navigate('/app/product'));
-        } else { //módosítás
+        } else { 
           api.Products.updateProduct(id!, {
             description: values.description,
             price: values.price,
@@ -94,14 +90,6 @@ const ProductForm = ({isCreate}: IProductForm) => {
         key={form.key('price')}
         {...form.getInputProps('price')}
       />
-
-      {/* <Select
-      label="Role"
-      placeholder="Role TESZT!"
-      data={['React', 'Angular', 'Vue', 'Svelte']}
-      key={form.key('role')}
-      {...form.getInputProps('role')}
-    /> */}
 
       <Group justify="flex-end" mt="md">
         <Button type="submit">Küldés</Button>

@@ -180,7 +180,7 @@ def login_user(json_data):
 @bp.get('/users/me')
 @bp.output(UserResponseSchema)
 @bp.auth_required(auth)
-@role_required(["Admin"])
+@role_required(["Admin", "User", "Transport", "Warehouse","Supplier"])
 def get_my_profile():
     user_id = auth.current_user.get("user_id")
     success, response = UserService.get_user_by_id(user_id)

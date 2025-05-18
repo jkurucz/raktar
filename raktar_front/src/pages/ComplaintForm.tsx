@@ -21,7 +21,7 @@ const ComplaintForm = () => {
     try {
       await api.Complaints.createComplaint(Number(orderId), message);
       setSuccess("A panasz sikeresen elküldve.");
-      setTimeout(() => navigate(-1), 1200); // vissza az előző oldalra ~1.2 mp után
+      setTimeout(() => navigate(-1), 1200); 
     } catch (err) {
       setError("Hiba a panasz küldésekor.");
     }

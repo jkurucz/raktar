@@ -88,10 +88,7 @@ const TransportOrders = () => {
     <Card withBorder shadow="sm" p="lg">
       <Group justify="space-between" mb="md">
         <Text fz="xl">Fuvarfeladatok</Text>
-        {/* <Button onClick={() => navigate('add')}>
-          Új fuvarfeladat
-        </Button> */}
-              {(role === 'Admin' || role === 'Transport' )&& (
+               {(role === 'Admin' || role === 'Transport' )&& (
         <Button onClick={() => navigate('add')}>
           Új fuvarfeladat
         </Button>

@@ -53,10 +53,10 @@ const Register = () => {
         street: values.street,
       }
     ).then(() => {
-      navigate("/"); // Sikeres regisztráció után navigálás pl. login oldalra
+      navigate("/"); 
     }).catch((err) => {
       console.error("Regisztrációs hiba:", err);
-      // Itt adhatsz hozzá hibakezelést, toast üzenetet stb.
+     
     });
   };
 

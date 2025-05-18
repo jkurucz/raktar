@@ -25,5 +25,5 @@ export interface SafeUpdateUserRequest {
   email?: string;
   phone?: string;
   address?: Address;
-  roles?: string[]; // Csak role nevek
+  roles?: string[]; 
 }

@@ -37,7 +37,7 @@ const Orders = () => {
         });
     }
 
-    // Termékek betöltése a nevekhez
+   
     api.Products.getProducts()
       .then((res) => {
         setProducts(res.data);
@@ -47,14 +47,11 @@ const Orders = () => {
       });
   }, [role]);
 
-  // Termék ID -> Név
   const productMap = Object.fromEntries(products.map(p => [p.id, p.product_name]));
 
-  // Rendelések sorainak előállítása (egy order = több sor: annyi, ahány termék van benne)
   const rows = orders.flatMap((order) => {
     return order.items.map((item, idx) => (
       <Table.Tr key={`${order.id}_${item.product_id}`}>
-        {/* Első sorban jelenik meg a rendelés azonosítója, dátuma, ügyfél, fuvar (ha admin/warehouse/transport) */}
         {idx === 0 ? (
           <>
             <Table.Td rowSpan={order.items.length}>{order.id}</Table.Td>
@@ -63,10 +60,10 @@ const Orders = () => {
             </Table.Td>
           </>
         ) : null}
-        {/* Terméknév és darabszám külön oszlopban */}
+    
         <Table.Td>{item.quantity}</Table.Td>
         <Table.Td>{productMap[item.product_id] || `#${item.product_id}`}</Table.Td>
-        {/* Ügyfél adatok csak admin/warehouse/transport role-nál, és csak az első sorban */}
+
         {["Admin", "Warehouse", "Transport"].includes(role || "") && idx === 0 && (
           <Table.Td rowSpan={order.items.length}>
             <Stack gap={4}>
@@ -76,7 +73,7 @@ const Orders = () => {
             </Stack>
           </Table.Td>
         )}
-        {/* ÚJ: Fuvarozó (cég, rendszám, dátum) - csak első sorban */}
+     
         {["Admin", "Warehouse", "Transport", "User"].includes(role || "") && idx === 0 && (
           <Table.Td rowSpan={order.items.length}>
             <Stack gap={4}>
@@ -90,7 +87,7 @@ const Orders = () => {
             </Stack>
           </Table.Td>
         )}
-        {/* Műveletek csak az első sorban */}
+     
         {idx === 0 ? (
           <Table.Td rowSpan={order.items.length}>
             {/* {role === "Admin" && (

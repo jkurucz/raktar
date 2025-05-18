@@ -28,8 +28,6 @@ const Products = () => {
   }, []);
 
   const role = localStorage.getItem(roleKeyName);
-
-  // Készlet termék ID -> quantity
   const stockMap = Object.fromEntries(stock.map(s => [s.product_id, s.quantity]));
 
   const handleQuantityChange = (productId: number, value: number | string) => {
@@ -49,17 +47,14 @@ const Products = () => {
       return;
     }
     try {
-      // 1. Megrendelés leadása
       await api.Orders.createOrder({
         items: [{ product_id: product.id, quantity: qty }]
       });
-      // 2. Raktárkészlet csökkentése
+
       await api.Warehouse.updateStock(product.id, WAREHOUSE_ID, -qty);
       alert("Megrendelés sikeres!");
-      // 3. Raktárkészlet újratöltése
       const res = await api.Warehouse.getStock(WAREHOUSE_ID);
       setStock(res.data);
-      // mennyiséget nullázni (opcionális)
       setQuantities(prev => ({ ...prev, [product.id]: 1 }));
     } catch (err) {
       console.error("Megrendelés hiba:", err);
@@ -77,7 +72,6 @@ const Products = () => {
         </Badge>
       </Table.Td>
       <Table.Td>
-        {/* Készlet mennyiség */}
         {stockMap[element.id] ?? 0}
       </Table.Td>
       {role === 'User' && (

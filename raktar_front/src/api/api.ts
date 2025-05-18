@@ -28,7 +28,7 @@ const Products = {
 };
 
 const Orders = {
-  getOrders: () => axiosInstance.get<Order[]>('/order/'), // saját vagy összes
+  getOrders: () => axiosInstance.get<Order[]>('/order/'), 
   getAllOrders: () => axiosInstance.get<Order[]>('/order/all'),
   getOrderById: (id: number) => axiosInstance.get<Order>(`/orders/${id}`),
   createOrder: (orderData: { items: { product_id: number; quantity: number }[] }) =>

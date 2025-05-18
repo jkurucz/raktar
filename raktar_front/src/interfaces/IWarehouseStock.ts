@@ -4,7 +4,6 @@ export interface IWarehouseStock {
   warehouse_id: number;
   quantity: number;
   last_updated: string;
-  // Bővítéshez:
   product_name?: string;
   warehouse_location?: string;
 }

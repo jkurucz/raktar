@@ -15,13 +15,10 @@ export interface Order {
   items: OrderItem[];
   status: OrderStatus[];
 
-  // csak ha admin/warehouse/transport vagy:
   user_name?: string;
   user_phone?: string;
   user_address?: string;
   
-
-  //PRÓBA
   transport_company?: string;
   transport_truck?: string;
   load_date?: string;
