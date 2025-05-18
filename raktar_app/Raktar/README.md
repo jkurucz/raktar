@@ -1,0 +1,7 @@
+| Email                 | Jelszó      | Szerepkör        |
+| --------------------- | ----------- | ---------------- |
+| admin@example.com     | admin123    | Administrator    |
+| warehouse@example.com | courier123  | Courier          |
+| user@example.com      | user123     | User             |
+| transport@example.com | manager123  | LogisticsManager |
+| supplier@example.com  | supplier123 | Supplier         |

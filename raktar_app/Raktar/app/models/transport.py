@@ -1,7 +1,12 @@
-from app.extensions import db
+from __future__ import annotations
+
+from typing import List
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import String
-from typing import List
+
+from app.extensions import db
+
 
 class Transport(db.Model):
     __tablename__ = "transports"
@@ -10,8 +15,7 @@ class Transport(db.Model):
     truck: Mapped[str] = mapped_column(String(50), nullable=False)
     company: Mapped[str] = mapped_column(String(100), nullable=False)
 
-    transport_orders: Mapped[List["TransportOrder"]] = relationship(back_populates="transport")
+    transport_orders: Mapped[List["TransportOrder"]] = relationship(back_populates="transport", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return f"Transport(id={self.id!r}, truck={self.truck!s}, company={self.company!s})"
-
