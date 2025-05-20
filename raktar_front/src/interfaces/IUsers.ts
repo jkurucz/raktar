@@ -24,6 +24,6 @@ export interface SafeUpdateUserRequest {
   name?: string;
   email?: string;
   phone?: string;
-  address?: Address;
+  addresses?: Address[];
   roles?: string[]; 
 }

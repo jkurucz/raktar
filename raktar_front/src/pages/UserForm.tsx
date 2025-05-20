@@ -13,7 +13,7 @@ import api from "../api/api";
 import { Address } from "../interfaces/IUsers.ts";
 
 interface IUserForm {
-  isCreate?: boolean; // ha esetleg használni akarod később
+  isCreate?: boolean; 
 }
 
 
@@ -76,40 +76,20 @@ const UserForm = ({ isCreate }: IUserForm) => {
     }
   }, [id]);
 
-  // const handleSubmit = (values: typeof form.values) => {
-  //   const updateObj = {
-  //     name: values.name,
-  //     email: values.email,
-  //     phone: values.phone,
-  //     addresses: {
-  //       city: values.city,
-  //       street: values.street,
-  //       postalcode: values.postalcode,
-  //       country: values.country
-  //     },
-  //     roles: [values.role]
-  //   };
-
-  //   api.Users.updateUser(id!, updateObj).then(() => {
-  //     alert("Sikeres módosítás!");
-  //   }).catch(err => {
-  //     console.error("Hiba a módosítás során:", err);
-  //     alert("Nem sikerült a mentés.");
-  //   });
-  // };
-  
 
   const handleSubmit = (values: typeof form.values) => {
   const updateObj = {
     name: values.name,
     email: values.email,
     phone: values.phone,
-    address: {
-      city: values.city,
-      street: values.street,
-      postalcode: values.postalcode,
-      country: values.country
-    },
+    addresses: [
+        {
+          city: values.city,
+          street: values.street,
+          postalcode: values.postalcode,
+          country: values.country
+        }
+    ],
     roles: [values.role]
   };
 
@@ -117,6 +97,7 @@ const UserForm = ({ isCreate }: IUserForm) => {
     // alert("Sikeres módosítás!");
     navigate('/app/users');
   }).catch(err => {
+    console.log("updateObj", updateObj);
     console.error("Hiba a módosítás során:", err);
     alert("Nem sikerült a mentés.");
   });  

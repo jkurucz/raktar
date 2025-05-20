@@ -41,7 +41,7 @@ const Users = {
   getUserById: (id: string) => axiosInstance.get<User>(`/user/users/${id}`),
   updateUser: (id: string, data: any) => axiosInstance.put(`/user/users/${id}`, data),
   getRoles: () => axiosInstance.get<{ name: string }[]>('/user/roles'),
-  safeUpdateUser: (id: string, data: SafeUpdateUserRequest) =>
+  safeUpdateUser: (id: string, data: SafeUpdateUserRequest) => 
     axiosInstance.put<User>(`/user/users/${id}/safe-update`, data),
   getMyProfile: () => axiosInstance.get<User>('/user/users/me'),
   updateMyProfile: (data: Partial<User>) => axiosInstance.put<User>('/user/users/me', data)
